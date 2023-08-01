@@ -26,7 +26,7 @@ local HTML_CODE = [[
 				  color: "#6A5ACD";
 				  background-color: rgba(0, 0, 0, 0.75);
 				  display: inline-block;
-				  padding: 0 10px; /* Добавлено свойство padding для задания ширины background-color */
+				  padding: 0 10px;
 				  position: relative;
 				  text-align: center;
 				  white-space: nowrap;
@@ -46,36 +46,25 @@ local HTML_CODE = [[
 				  white-space: nowrap;
 				}
 
-				username::after {
-				  content: "";
-				  display: block;
-				  height: 10px;
-				  width: 100%;
-				  background-color: var(--hex-color);
-				  margin-top: 2px;
-				}
+        username::after {
+          content: "";
+          display: block;
+          height: 10px;
+          width: 100%;
+          background-color: var(--hex-color);
+          margin-top: 2px;
+        }
+
     </style>
-
-
+    
 
     <body>
-
 
         <gamemode id="gamemode">mode</gamemode>
         <costyl id="costyl"></costyl>
         <username id="username">name</username>
 
     </body>
-
-
-
-    <script type="text/javascript">
-    	function gamemodeColor(clr) {
-    		document.getElementById("gamemode").style.color = clr;
-    		console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    	};
-
-    </script>
 
 
 </html>
@@ -97,10 +86,10 @@ local function newPlayer(player)
     if not IsValid(player) then return end
 
     local frame = vgui.Create( "DFrame" )
-    --timer.Simple(35,function() 
-    --  players[player] = nil
-    --  frame:Remove() 
-    --end)
+    timer.Simple(35,function() 
+      players[player] = nil
+      frame:Remove() 
+    end)
 
     frame:SetTitle( "" )
     frame:SetSize( 2048, 500 )
@@ -146,7 +135,7 @@ end
     end
 
 
-hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
+--hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
 
 
     local me = LocalPlayer()
@@ -232,4 +221,4 @@ hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
         end
 
     end)
-end)
+--end)
