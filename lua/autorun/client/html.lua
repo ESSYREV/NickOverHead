@@ -8,67 +8,75 @@ local HTML_CODE = [[
     <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap');
+				body {
+				  text-align: center;
+				  clear: both;
+				}
 
-    body {
-      text-align: center;
-    }
+				costyl {
+				  display: block;
+				}
 
 
+				gamemode {
+				  --hex-color: black; /* Set initial value */
+				  font-family: 'Ubuntu', sans-serif;
+				  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+				  font-size: 65px;
+				  color: "#6A5ACD";
+				  background-color: rgba(0, 0, 0, 0.75);
+				  display: inline-block;
+				  padding: 0 10px; /* Добавлено свойство padding для задания ширины background-color */
+				  position: relative;
+				  text-align: center;
+				  white-space: nowrap;
+				}
 
-    gamemode {
-        --text-color: #6A5ACD;
-        color: var(--text-color);
-        background-color: rgba(0, 0, 0, 0.75);
-        display: block;
-        margin: 0 auto;
-            width: fit-content;
-        text-align: center;
-        font-family: 'Ubuntu', sans-serif;
-        text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-        font-size: 64px;
-    }
+				username {
+				  --hex-color: black; /* Set initial value */
+				  font-family: 'Ubuntu', sans-serif;
+				  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+				  font-size: 95px;
+				  color: rgb(255,255,255);
+				  background-color: rgba(0, 0, 0, 0.75);
+				  display: inline-block;
+				  padding: 0 10px; /* Добавлено свойство padding для задания ширины background-color */
+				  position: relative;
+				  text-align: center;
+				  white-space: nowrap;
+				}
 
-        username {
-          --hex-color: black; /* Set initial value */
-          font-family: 'Ubuntu', sans-serif;
-          text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-          font-size: 125px;
-          --text-color: var(--default-text-color);
-          color: rgb(255,255,255);
-          background-color: rgba(0, 0, 0, 0.75);
-          display: inline-block;
-          position: relative;
-          text-align: center;
-          white-space: nowrap;
-        }
-
-        username::after {
-          content: "";
-          display: block;
-          height: 10px;
-          width: 100%;
-          background-color: var(--hex-color);
-          margin-top: 2px;
-        }
-
+				username::after {
+				  content: "";
+				  display: block;
+				  height: 10px;
+				  width: 100%;
+				  background-color: var(--hex-color);
+				  margin-top: 2px;
+				}
     </style>
-
-
-
-
-
-
-
-
 
 
 
     <body>
 
+
         <gamemode id="gamemode">mode</gamemode>
+        <costyl id="costyl"></costyl>
         <username id="username">name</username>
 
     </body>
+
+
+
+    <script type="text/javascript">
+    	function gamemodeColor(clr) {
+    		document.getElementById("gamemode").style.color = clr;
+    		console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    	};
+
+    </script>
+
 
 </html>
 
@@ -89,7 +97,7 @@ local function newPlayer(player)
     if not IsValid(player) then return end
 
     local frame = vgui.Create( "DFrame" )
-    --timer.Simple(25,function() 
+    --timer.Simple(35,function() 
     --  players[player] = nil
     --  frame:Remove() 
     --end)
@@ -109,15 +117,19 @@ local function newPlayer(player)
 
 
     local call = "document.getElementById('username').textContent = '"..player:GetName().."';"
-    call = call .. "document.getElementById('username').style.setProperty('--hex-color', '#"..  ColorToHex( team.GetColor( player:Team() ) )    .."');"
+    
+	  local mode = player:GetNWBool("_Kyle_Buildmode")
+	  if mode then 
+	  	mode = " [ BUILD ] " 
+	    call = call .. [[document.getElementById("gamemode").style.color = "#6A5ACD";]]
+	  else 
+	    mode = " [ PVP ] | HP: "..player:Health()
+	    call = call .. [[document.getElementById("gamemode").style.color = "#FFA07A";]]
 
-  local mode = player:GetNWBool("_Kyle_Buildmode")
-  if mode then mode = " [ BUILD ] " else 
-    mode = " [ PVP ] | HP: "..player:Health()
-    call = call .. "document.getElementById('gamemode').style.setProperty('--text-color', '#FFA07A');"
-  end
+	  end
 
     call = call .. "document.getElementById('gamemode').textContent = '"..mode.."';"
+
 
 
     dhtml:Call( call )
@@ -129,8 +141,11 @@ local function newPlayer(player)
 
 end
 
+    for k,v in pairs(player.GetAll()) do
+       newPlayer(v)
+    end
 
-hook.Remove( "PostDrawOpaqueRenderables", "RankOverHead")
+
 hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
 
 
@@ -163,22 +178,39 @@ hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
             if frame[1] == nil then continue end
             if not IsValid(player) then continue end
 
-            local mode = player:GetNWBool("_Kyle_Buildmode")
-            if mode then continue end
-
-            local health = player:Health()
-            if (player.last_health or -1) == health then continue end
-            player.last_health = health
-
             local call = ""
+            local mode = player:GetNWBool("_Kyle_Buildmode")
 
-        mode = " [ PVP ] | HP: "..player:Health()
-        call = call .. "document.getElementById('gamemode').style.setProperty('--text-color', '#FFA07A');"
+            if (mode==true) and (player.last_gamemode==true) then continue
+    				elseif (mode==true) and (player.last_gamemode==false) then
 
+                call = [[
+						              document.getElementById("gamemode").style.color = "#6A5ACD";
+													document.getElementById('gamemode').textContent = ' [BUILD] ';
+					              ]]
 
-            call = call .. "document.getElementById('gamemode').textContent = '"..mode.."';"
+					  elseif (mode==false) and (player.last_gamemode==true) then
 
-            frame[2]:Call( call )
+			        local rmode = " [ PVP ] | HP: "..player:Health()
+    					call = [[document.getElementById("gamemode").style.color = "#FFA07A";]]
+    					call = call .. "document.getElementById('gamemode').textContent = '"..rmode.."';"
+
+					  elseif (mode==false) and (player.last_gamemode==false) then
+
+	            local health = player:Health()
+	            if (player.last_health or -1) == health then continue end
+	            player.last_health = health
+
+			        local rmode = " [ PVP ] | HP: "..player:Health()
+	            call = "document.getElementById('gamemode').textContent = '"..rmode.."';"
+
+					  end
+
+            
+            player.last_gamemode = mode
+            if not (call == "") then
+            	frame[2]:Call( call )
+          	end
         end
 
     end)
@@ -194,7 +226,7 @@ hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
 
             local angle = (me:GetPos() - player:GetPos()):Angle() or me:EyeAngles()
 
-            cam.Start3D2D((player:GetBonePosition( player.bone_head ) or player:GetPos()) + Vector(0,0,25), Angle(0,angle[2] + 90,90), 0.05)
+            cam.Start3D2D((player:GetBonePosition( player.bone_head ) or (player:GetPos() + Vector(0,0,85))) + Vector(0,0,25), Angle(0,angle[2] + 90,90), 0.05)
                 frame[1]:PaintManual()
             cam.End3D2D()
         end
