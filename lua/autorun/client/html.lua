@@ -56,7 +56,7 @@ local HTML_CODE = [[
         }
 
     </style>
-    
+
 
     <body>
 
@@ -86,10 +86,10 @@ local function newPlayer(player)
     if not IsValid(player) then return end
 
     local frame = vgui.Create( "DFrame" )
-    timer.Simple(35,function() 
-      players[player] = nil
-      frame:Remove() 
-    end)
+    --timer.Simple(35,function() 
+    --  players[player] = nil
+    --  frame:Remove() 
+    --end)
 
     frame:SetTitle( "" )
     frame:SetSize( 2048, 500 )
@@ -135,7 +135,7 @@ end
     end
 
 
---hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
+hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
 
 
     local me = LocalPlayer()
@@ -221,4 +221,4 @@ end
         end
 
     end)
---end)
+end)
