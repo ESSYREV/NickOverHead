@@ -215,7 +215,7 @@ hook.Add( "InitPostEntity", "essyrev_nick_over_head", function()
 
             local angle = (me:GetPos() - player:GetPos()):Angle() or me:EyeAngles()
 
-            cam.Start3D2D((player:GetBonePosition( player.bone_head ) or (player:GetPos() + Vector(0,0,85))) + Vector(0,0,25), Angle(0,angle[2] + 90,90), 0.05)
+            cam.Start3D2D((player:GetBonePosition( player.bone_head or 0 ) or (player:GetPos() + Vector(0,0,85))) + Vector(0,0,25), Angle(0,angle[2] + 90,90), 0.05)
                 frame[1]:PaintManual()
             cam.End3D2D()
         end
